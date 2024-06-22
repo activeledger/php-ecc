@@ -1,0 +1,24 @@
+{
+  "name": "activeledger/php-key",
+  "version": "1.0.0",
+  "description": "Activeledger minimal key generation and data signing SDK",
+  "type": "library",
+  "require": {
+    "paragonie/easy-ecc": "^1.1"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Activeledger\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Chris",
+      "email": "4070267+Chris-Holdt@users.noreply.github.com"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "^11.2"
+  }
+}
