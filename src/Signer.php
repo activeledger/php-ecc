@@ -15,31 +15,34 @@ class Signer
     $this->ecc = new EasyECC('K256');
   }
 
-  public function sign(string $privateKeyHex, string $data)
+  public function sign(string $privateKey, string $data)
   {
-    $privateKey = $this->hexToGMP($privateKeyHex);
+    $encodedData = $this->encodeData($data);
+    $privateKey = str_replace('0x', '', $privateKey);
+    $privateKey = $this->hexToGMP($privateKey);
 
     $adapter = EccFactory::getAdapter();
     $generator = $this->ecc->getGenerator('K256');
 
     $key = new SecretKey($adapter, $generator, $privateKey);
 
-    $sig = $this->ecc->sign($data, $key);
+    $sig = $this->ecc->sign($encodedData, $key);
 
-    $hexStr = '0x' . bin2hex($sig);
+    $hexStr = base64_encode($sig);
 
     return $hexStr;
   }
 
   public function verify(string $publicKey, string $data, string $signature)
   {
+    $encodedData = $this->encodeData($data);
+
     $publicKey = str_replace('0x', '', $publicKey);
-    $signature = str_replace('0x', '', $signature);
-    $sigBin = hex2bin($signature);
+    $signature = base64_decode($signature);
 
     $key = PublicKey::fromString($publicKey, 'K256');
 
-    return $this->ecc->verify($data, $key, $sigBin);
+    return $this->ecc->verify($encodedData, $key, $signature);
   }
 
   private function hexToGMP($hex)
@@ -47,5 +50,12 @@ class Signer
     $keystr = str_replace('0x', '', $hex);
     $gmpNum = gmp_init($keystr, 16);
     return $gmpNum;
+  }
+
+  private function encodeData(string $data)
+  {
+    $data = json_decode($data);
+    $data = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    return $data;
   }
 }

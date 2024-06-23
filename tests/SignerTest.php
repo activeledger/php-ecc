@@ -5,11 +5,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use PHPUnit\Framework\TestCase;
 use Activeledger\KeyGenerator;
 use Activeledger\Signer;
-use ParagonIE\ConstantTime\Binary;
 
 class SignerTest extends TestCase
 {
-  public function testSign()
+  public function testSignAndVerify()
   {
     $keyGen = new KeyGenerator();
     $key = $keyGen->generateKey();
@@ -26,11 +25,38 @@ class SignerTest extends TestCase
     $this->assertIsString($signature);
 
     // Debug printing
-    echo "Signature: " . $signature . "\n";
+    echo "Base64 Signature: " . $signature . "\n";
 
     $verify = $signer->verify($key['public'], $data, $signature);
     $this->assertTrue($verify);
 
-    echo "Verification: " . ($verify ? "Valid" : "Invalid") . "\n";
+    echo "Base64 Verification: " . ($verify ? "Valid" : "Invalid") . "\n";
+  }
+
+  public function testSignTx()
+  {
+    $keyGen = new KeyGenerator();
+    $key = $keyGen->generateKey();
+
+    $signer = new Signer();
+    $data = '{
+        "$namespace": "default",
+        "$contract": "onboard",
+        "$i": {
+            "identity": {
+            	"type":"secp256k1",
+                "publicKey": "' . $key['public'] . '"
+            }
+        }
+    }';
+
+    $signature = $signer->sign($key['private'], $data);
+    $this->assertNotNull($signature);
+    $this->assertNotEmpty($signature);
+    $this->assertIsString($signature);
+
+    echo "Transaction signature: " . $signature . "\nFor Public key: " . $key['public'] . "\n";
+
+    echo "Transaction body: \n" . $data . "\n";
   }
 }
