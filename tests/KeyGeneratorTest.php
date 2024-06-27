@@ -16,7 +16,8 @@ class KeyGeneratorTest extends TestCase
     $this->assertNotNull($key['public']);
 
     // Debug printing
-    /* echo "Private Key: " . $key['private'] . "\n";
-    echo "Public Key: " . $key['public'] . "\n"; */
+    echo "Private Key: " . $key['private'] . "\n";
+    echo "Public Key: " . $key['public'] . "\n";
+    echo "\n";
   }
 }

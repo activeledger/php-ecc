@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "Activeledger minimal key generation and data signing SDK",
   "type": "library",
-  "require": {
-    "paragonie/easy-ecc": "^1.1"
-  },
+  "require": {},
   "license": "MIT",
   "autoload": {
     "psr-4": {

@@ -18,7 +18,7 @@ class SignerTest extends TestCase
     $this->assertNotNull($key['public']);
 
     $signer = new Signer();
-    $data = 'Hello, World!';
+    $data = '{"data": "Hello, World!"}';
     $signature = $signer->sign($key['private'], $data);
     $this->assertNotNull($signature);
     $this->assertNotEmpty($signature);
@@ -28,9 +28,9 @@ class SignerTest extends TestCase
     echo "Base64 Signature: " . $signature . "\n";
 
     $verify = $signer->verify($key['public'], $data, $signature);
-    $this->assertTrue($verify);
-
     echo "Base64 Verification: " . ($verify ? "Valid" : "Invalid") . "\n";
+    echo "\n";
+    $this->assertTrue($verify);
   }
 
   public function testSignTx()
@@ -58,5 +58,9 @@ class SignerTest extends TestCase
     echo "Transaction signature: " . $signature . "\nFor Public key: " . $key['public'] . "\n";
 
     echo "Transaction body: \n" . $data . "\n";
+
+    $verify = $signer->verify($key['public'], $data, $signature);
+    echo "Transaction verification: " . ($verify ? "Valid" : "Invalid") . "\n";
+    echo "\n";
   }
 }
