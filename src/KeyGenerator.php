@@ -2,6 +2,8 @@
 
 namespace Activeledger;
 
+use Activeledger\PrivateKey;
+
 class KeyGenerator
 {
   private $config = array(
@@ -11,52 +13,42 @@ class KeyGenerator
     "curve_name" => "secp256k1"
   );
 
-  public function generateKey()
+  /**
+  * @return string[]
+  */
+  public function generateKey(): array
   {
+    return $this->gen();
+  }
 
-    $privateKeyResult = openssl_pkey_new($this->config);
-
-    openssl_pkey_export($privateKeyResult, $privateKey);
-
-    $details = openssl_pkey_get_details($privateKeyResult);
-
-    // $privatekeyHex = ;
-    // echo "Private: " . $privatekeyHex . "\n";
-    //
-
-    $privatekeyHex = $this->privateToHex($details["ec"]["d"]);
-
-    $publickeyHex = $this->publicToHex($details["ec"]["x"], $details["ec"]["y"]);
-    // echo "Public: " . $publickeyHex . "\n";
-
-    // $privatekey = $this->ecc->generatePrivateKey();
-    // $publickey = $privatekey->getPublicKey();
-    //
-    // $gmpNum = $privatekey->getSecret();
-    // $privatekeyHex = '0x' . gmp_strval($gmpNum, 16);
-    //
-    // $publicCompressed = $publickey->toString();
-    // $publickeyHex = '0x' . $publicCompressed;
+  /**
+  * @return string[]
+  */
+  private function gen(): array
+  {
+    $privateKey = PrivateKey::generate();
+    $privateKeyHex = $this->privateToHex($privateKey);
+    $publicKeyHex = $this->getPublicHex($privateKey);
 
     return [
-      'private' => $privatekeyHex,
-      'public' => $publickeyHex
+      'private' => $privateKeyHex,
+      'public' => $publicKeyHex
     ];
   }
 
-  private function privateToHex(string $privateKeyD)
+  private function privateToHex(PrivateKey $privateKey): string
   {
-    $key = ltrim($privateKeyD, '0');
-    $hex = bin2hex($key);
-    return '0x' . $hex;
+    $privateKeyNum = $privateKey->getSecret();
+    $privateKeyHex = '0x' . gmp_strval($privateKeyNum, 16);
+    return $privateKeyHex;
   }
 
-  private function publicToHex(string $x, string $y)
+  private function getPublicHex(PrivateKey $privateKey): string
   {
-    $yGmp = gmp_import($y);
+    $publicKey = $privateKey->getPublicKey();
+    $publicKeyCompressed = $publicKey->toString();
+    $publicKeyHex = '0x' . $publicKeyCompressed;
 
-    $prefix = (gmp_intval(gmp_and($yGmp, 1)) === 0) ? '03' : '02';
-    $hex = $prefix . bin2hex($x);
-    return '0x' . $hex;
+    return $publicKeyHex;
   }
 }
