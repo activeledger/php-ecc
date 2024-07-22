@@ -14,7 +14,7 @@ sent to the Activeledger network.
 ## Installation
 
 ```
-$ composer require activeledger/php-key ~0.0.1
+$ composer require activeledger/ecc ~0.0.1
 $ composer install -o
 ```
 

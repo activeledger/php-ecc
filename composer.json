@@ -1,5 +1,5 @@
 {
-  "name": "activeledger/php-key",
+  "name": "activeledger/ecc",
   "version": "1.0.0",
   "description": "Activeledger minimal key generation and data signing SDK",
   "type": "library",
