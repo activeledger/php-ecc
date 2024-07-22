@@ -1,6 +1,6 @@
 <?php
 
-namespace Activeledger;
+namespace Activeledger\Maths;
 
 use GMP;
 
@@ -30,10 +30,6 @@ class ConstantTimeMath extends GmpMath
         return ($gt + $gt + $eq) - 1;
   }
 
-  public function getModularArithmetic(GMP $modulus)
-  {
-    return new ModularArithmetic($this, $modulus);
-  }
 
   public function normalizeLengths(
         #[\SensitiveParameter]

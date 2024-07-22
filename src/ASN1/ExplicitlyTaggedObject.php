@@ -31,14 +31,6 @@ class ExplicitlyTaggedObject extends ASNObject
   {
     $identifier = Identifier::create(Identifier::CLASS_CONTEXT_SPECIFIC, true, $this->tag);
 
-    echo "Identifier of explicitly tagged object: " . bin2hex( $identifier ) . "\n";
-
-    if (is_int($identifier)) {
-      echo "Identifier is an int\n";
-    } else {
-      echo "Identifier not an int\n";
-    }
-
     return is_int($identifier) ? chr($identifier) : $identifier;
   }
 
@@ -66,8 +58,6 @@ class ExplicitlyTaggedObject extends ASNObject
     foreach ($this->decoratedObjects as $obj) {
       $length += $obj->getObjectLength();
     }
-
-    echo "Length of explicitly tagged object: " . $length . "\n";
 
     return $length;
   }

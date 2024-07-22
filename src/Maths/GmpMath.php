@@ -1,10 +1,16 @@
 <?php
 
-namespace Activeledger;
+namespace Activeledger\Maths;
 
 use GMP;
 
 class GmpMath {
+
+  public function getModularArithmetic(GMP $modulus): ModularArithmetic
+  {
+    return new ModularArithmetic($this, $modulus);
+  }
+
   public function stringToInt(string $s): GMP {
     $result = gmp_init(0, 10);
     $sLen = $this->binaryStringLen($s);
@@ -57,35 +63,27 @@ class GmpMath {
 
   public function cmp(GMP $first, GMP $other): int
   {
-      return gmp_cmp($first, $other);
+    return gmp_cmp($first, $other);
   }
 
   public function sub(GMP $minuend, GMP $subtrahend): GMP
   {
-    /** @var GMP $out */
-    $out = gmp_sub($minuend, $subtrahend);
-    return $out;
+    return gmp_sub($minuend, $subtrahend);
   }
 
   public function mul(GMP $multiplier, GMP $multiplicand): GMP
   {
-    /** @var GMP $out */
-    $out = gmp_mul($multiplier, $multiplicand);
-    return $out;
+    return gmp_mul($multiplier, $multiplicand);
   }
 
-  public function add(GMP $augend, GMP $addend): GMP
+  public function add(GMP $a, GMP $b): GMP
   {
-    /** @var GMP $out */
-    $out = gmp_add($augend, $addend);
-    return $out;
+    return gmp_add($a, $b);
   }
 
   public function pow(GMP $base, int $exponent): GMP
   {
-    /** @var GMP $out */
-    $out = gmp_pow($base, $exponent);
-    return $out;
+    return gmp_pow($base, $exponent);
   }
 
   public function rightShift(GMP $number, int $positions): GMP {

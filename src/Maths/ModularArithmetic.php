@@ -1,6 +1,6 @@
 <?php
 
-namespace Activeledger;
+namespace Activeledger\Maths;
 
 use GMP;
 

@@ -2,13 +2,15 @@
 
 namespace Activeledger\Serialiser\PrivateKey;
 
-use Activeledger\PrivateKey;
-use Activeledger\CurveOIDData;
+use Activeledger\Key\PrivateKey;
+use Activeledger\Curve\CurveOIDData;
 use Activeledger\ASN1\Sequence;
 use Activeledger\ASN1\Integer;
 use Activeledger\ASN1\OctetString;
 use Activeledger\ASN1\ExplicitlyTaggedObject;
 use Activeledger\ASN1\BitString;
+
+
 
 class DerPrivateKeySerialiser
 {
@@ -23,24 +25,6 @@ class DerPrivateKeySerialiser
     $oct = new OctetString($this->formatKey($key));
     $exp = new ExplicitlyTaggedObject(0, CurveOIDData::getOID());
     $exp2 = new ExplicitlyTaggedObject(1, $this->encodePublicKey($key));
-
-    echo "Int: " . $int . "\n";
-    echo "Oct: " . $oct . "\n";
-
-    foreach ($exp->getContent() as $object) {
-      echo "Exp object: " . $object . "\n";
-    }
-
-    foreach ($exp2->getContent() as $object) {
-      echo "Exp 2 object: " . $object . "\n";
-    }
-
-    /* $keyInfo = new Sequence(
-      new Integer(SELF::VERSION),
-      new OctetString($this->formatKey($key)),
-      new ExplicitlyTaggedObject(0, CurveOIDData::getOID()),
-      new ExplicitlyTaggedObject(1, $this->encodePublicKey($key))
-    ); */
 
     $keyInfo = new Sequence(
       $int,
@@ -66,10 +50,6 @@ class DerPrivateKeySerialiser
 
     $publicKey = $key->getPublicKey();
     $point = $publicKey->getGenerator();
-
-    // echo "Public key: " . $publicKey . "\n";
-    echo "Point X: " . $point->getX() . "\n";
-    echo "Point Y: " . $point->getY() . "\n";
 
     $length = CurveOIDData::getByteSize() * 2;
 

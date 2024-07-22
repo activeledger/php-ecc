@@ -1,8 +1,12 @@
 <?php
 
-namespace Activeledger;
+namespace Activeledger\Key;
 
 use GMP;
+
+use Activeledger\Maths\GmpMath;
+use Activeledger\Curve\Curve;
+use Activeledger\Curve\GeneratorPoint;
 
 class PrivateKey 
 {
@@ -21,11 +25,11 @@ class PrivateKey
   }
 
   public static function generate(): self {
-    $curve = new Curve();
+    $adapter = new GmpMath();
+
+    $curve = new Curve($adapter);
     $generator = $curve->getGenerator();
     $sk = $generator->createPrivateKey();
-
-    $adapter = new GmpMath();
 
     return new self($adapter, $generator, $sk->getSecret());
   }

@@ -70,11 +70,6 @@ class ObjectIdentifier extends ASNObject
       $enc = Base128::encode($subIdentifier);
       $encodedValue .= $enc;
 
-      echo "Sub ".$i.": " . $subIdentifier . "\n";
-      $check = Base128::decode($enc);
-      echo "Check: " . $check . "\n";
-
-      echo "Check == Sub: " . ($check == $subIdentifier) . "\n";
       $i++;
     }
 

@@ -49,9 +49,6 @@ class Identifier
 
     $id = chr($firstOctet).Base128::encode($tagNumber);
 
-    echo "Returning identifier: " . bin2hex($firstOctet) . "\n";
-    echo "Encoded tag number: " . bin2hex(Base128::encode($tagNumber)) . "\n";
-
     return $id;
   }
 

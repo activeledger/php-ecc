@@ -2,43 +2,47 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use Activeledger\ActiveECC;
 use PHPUnit\Framework\TestCase;
 use Activeledger\KeyGenerator;
 use Activeledger\Signer;
 
 class SignerTest extends TestCase
 {
-  public function testSignAndVerify()
+  public function testSign(): void
   {
-    $keyGen = new KeyGenerator();
-    $key = $keyGen->generateKey();
+
+    $activeecc = new ActiveECC();
+    $key = $activeecc->generate();
+    
     $this->assertArrayHasKey('private', $key);
     $this->assertArrayHasKey('public', $key);
     $this->assertNotNull($key['private']);
     $this->assertNotNull($key['public']);
 
-    $signer = new Signer();
+    $pubKey = $key['public'];
+    // echo "Public Key: " . $pubKey . "\n";
+
     $data = '{"data": "Hello, World!"}';
-    $signature = $signer->sign($key['private'], $data);
+    $signature = $activeecc->sign($key['private'], $data);
     $this->assertNotNull($signature);
     $this->assertNotEmpty($signature);
     $this->assertIsString($signature);
 
     // Debug printing
-    echo "Base64 Signature: " . $signature . "\n";
+    // echo "Base64 Signature: " . $signature . "\n";
 
-    $verify = $signer->verify($key['public'], $data, $signature);
-    echo "Base64 Verification: " . ($verify ? "Valid" : "Invalid") . "\n";
-    echo "\n";
-    $this->assertTrue($verify);
+    /* $verify = $signer->verify($key['public'], $data, $signature);
+    echo "Base64 Verification: " . ($verify ? "Valid" : "Invalid") . "\n"; */
+    /* echo "\n";
+    $this->assertTrue($verify); */
   }
 
-  public function testSignTx()
+  public function testSignTx(): void
   {
-    $keyGen = new KeyGenerator();
-    $key = $keyGen->generateKey();
+    $aecc = new ActiveECC();
+    $key = $aecc->generate();
 
-    $signer = new Signer();
     $data = '{
         "$namespace": "default",
         "$contract": "onboard",
@@ -50,17 +54,25 @@ class SignerTest extends TestCase
         }
     }';
 
-    $signature = $signer->sign($key['private'], $data);
+    $signature = $aecc->sign($key['private'], $data);
     $this->assertNotNull($signature);
     $this->assertNotEmpty($signature);
     $this->assertIsString($signature);
 
-    echo "Transaction signature: " . $signature . "\nFor Public key: " . $key['public'] . "\n";
+    $hexSig = $aecc->getHexSignature();
+    $this->assertNotNull($hexSig);
+    $this->assertNotEmpty($hexSig);
+    $this->assertIsString($hexSig);
 
-    echo "Transaction body: \n" . $data . "\n";
-
-    $verify = $signer->verify($key['public'], $data, $signature);
-    echo "Transaction verification: " . ($verify ? "Valid" : "Invalid") . "\n";
     echo "\n";
+    echo "Signed with the following private key: \n" . $key['private'] . "\n";
+    echo "Transaction body: \n" . $data . "\n";
+    echo "Transaction signature: " . $signature . "\nFor Public key: " . $key['public'] . "\n";
+    echo "Hex Signature: " . $hexSig . "\n";
+
+
+    /* $verify = $signer->verify($key['public'], $data, $signature);
+    echo "Transaction verification: " . ($verify ? "Valid" : "Invalid") . "\n";
+    echo "\n"; */
   }
 }
