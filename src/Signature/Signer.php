@@ -17,8 +17,6 @@ class Signer
     $sig = $this->signData($data, $key);
     $this->signature = $sig;
 
-    // $hexStr = '0x' . bin2hex($sig);
-
     return base64_encode($sig);
   }
 
